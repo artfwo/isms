@@ -13,7 +13,6 @@ int init_sdl(int x, int y);
 void deinit_sdl(void);
 
 int sdl_active(void);
-void sdl_check(void);
 
 void sdl_redraw(uint32_t *dst);
 void sdl_clear(uint32_t *dst);

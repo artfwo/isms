@@ -24,8 +24,6 @@ int sdl_active() { return active; }
 
 void *sdl_loop(void *);
 
-void sdl_check();
-
 int error(char *msg, const char *err) {
   printf("Error %s: %s\n", msg, err);
   return 0;
@@ -129,58 +127,54 @@ void deinit_sdl(void) {
   SDL_Quit();
 }
 
-void sdl_check() {
+void *sdl_loop(void *x) {
+  (void)x;
+
   union event_data *ev;
   SDL_Event event;
   int ctrl;
-  while (SDL_PollEvent(&event) != 0) {
-    switch (event.type) {
-    // case SDL_MOUSEBUTTONUP:
-    // case SDL_MOUSEBUTTONDOWN:
-    // case SDL_MOUSEMOTION: //domouse(&event); break;
-    case SDL_KEYDOWN:
-      // shift = SDL_GetModState() & KMOD_LSHIFT || SDL_GetModState() &
-      // KMOD_RSHIFT;
-      ctrl = SDL_GetModState() & KMOD_LCTRL || SDL_GetModState() & KMOD_RCTRL;
-      if (ctrl) {
-        switch (event.key.keysym.sym) {
-        case SDLK_q:
-          ev = event_data_new(EVENT_QUIT);
-          event_post(ev);
-          break;
-        case SDLK_r:
-          ev = event_data_new(EVENT_RESET);
-          event_post(ev);
-          break;
+
+  while (1) {
+    while (SDL_PollEvent(&event)) {
+      switch (event.type) {
+      // case SDL_MOUSEBUTTONUP:
+      // case SDL_MOUSEBUTTONDOWN:
+      // case SDL_MOUSEMOTION: //domouse(&event); break;
+      case SDL_KEYDOWN:
+        // shift = SDL_GetModState() & KMOD_LSHIFT || SDL_GetModState() &
+        // KMOD_RSHIFT;
+        ctrl = SDL_GetModState() & KMOD_LCTRL || SDL_GetModState() & KMOD_RCTRL;
+        if (ctrl) {
+          switch (event.key.keysym.sym) {
+          case SDLK_q:
+            ev = event_data_new(EVENT_QUIT);
+            event_post(ev);
+            break;
+          case SDLK_r:
+            ev = event_data_new(EVENT_RESET);
+            event_post(ev);
+            break;
+          }
+        }
+        ev = event_data_new(EVENT_KEY);
+        ev->key.scancode = event.key.keysym.sym;
+        event_post(ev);
+        break;
+      case SDL_QUIT:
+        ev = event_data_new(EVENT_QUIT);
+        event_post(ev);
+        break;
+      case SDL_WINDOWEVENT:
+        if (event.window.event == SDL_WINDOWEVENT_EXPOSED)
+          sdl_redraw(pixels);
+        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+          screen = SDL_GetWindowSurface(window);
+          window_rect();
+          sdl_redraw(pixels);
         }
       }
-      ev = event_data_new(EVENT_KEY);
-      ev->key.scancode = event.key.keysym.sym;
-      event_post(ev);
-      break;
-    case SDL_QUIT:
-      ev = event_data_new(EVENT_QUIT);
-      event_post(ev);
-      break;
-    case SDL_WINDOWEVENT:
-      if (event.window.event == SDL_WINDOWEVENT_EXPOSED)
-        sdl_redraw(pixels);
-      if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-        screen = SDL_GetWindowSurface(window);
-        window_rect();
-        sdl_redraw(pixels);
-      }
     }
-  }
-}
 
-// FIXME: this is high-cpu
-void *sdl_loop(void *x) {
-  (void)x;
-  union event_data *ev;
-  while (1) {
-    ev = event_data_new(EVENT_SDL_CHECK);
-    event_post(ev);
     sleep(0.005);
   }
 }

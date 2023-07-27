@@ -159,9 +159,6 @@ static void handle_event(union event_data *ev) {
   case EVENT_RESET:
     handle_reset();
     break;
-  case EVENT_SDL_CHECK:
-    sdl_check();
-    break;
   case EVENT_EXEC_CODE_LINE:
     // printf("e: codeline: %s\n", ev->exec_code_line.line);
     lua_run(ev->exec_code_line.line);
