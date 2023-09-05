@@ -8,8 +8,6 @@ extern uint32_t *pixels;
 int init_sdl(int x, int y);
 void deinit_sdl(void);
 
-void sdl_check(void);
-
 void sdl_redraw(uint32_t *dst);
 void sdl_clear(uint32_t *dst);
 void sdl_pixel(uint32_t *dst, int x, int y, int color);

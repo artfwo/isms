@@ -21,8 +21,6 @@ int ZOOM = 2;
 
 void *sdl_loop(void *);
 
-void sdl_check();
-
 int error(char *msg, const char *err) {
   printf("Error %s: %s\n", msg, err);
   return 0;
@@ -123,7 +121,7 @@ void sdl_check() {
   union event_data *ev;
   SDL_Event event;
   int ctrl;
-  while (SDL_PollEvent(&event) != 0) {
+  if (SDL_PollEvent(&event) != 0) {
     switch (event.type) {
     // case SDL_MOUSEBUTTONUP:
     // case SDL_MOUSEBUTTONDOWN:
@@ -169,8 +167,7 @@ void *sdl_loop(void *x) {
   (void)x;
   union event_data *ev;
   while (1) {
-    ev = event_data_new(EVENT_SDL_CHECK);
-    event_post(ev);
-    sleep(0.005);
+    sdl_check();
+    usleep(1000);
   }
 }
