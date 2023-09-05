@@ -17,10 +17,7 @@ uint32_t *pixels;
 
 int WIDTH = 256;
 int HEIGHT = 128;
-int ZOOM = 4;
-
-static int active = 0;
-int sdl_active() { return active; }
+int ZOOM = 2;
 
 void *sdl_loop(void *);
 
@@ -84,10 +81,6 @@ void sdl_redraw(uint32_t *dst) {
 }
 
 int init_sdl(int x, int y) {
-  // printf(">> SDL: init\n");
-  if (active)
-    return 0; // already initialized
-
   WIDTH = x;
   HEIGHT = y;
 
@@ -110,18 +103,15 @@ int init_sdl(int x, int y) {
   if (pthread_create(&p, NULL, sdl_loop, 0)) {
     return error("SDL", "pthread failed");
   }
+
   #ifndef __APPLE__
   pthread_setname_np(p, "sdl");
   #endif
 
-  active = 1;
   return 1;
 }
 
 void deinit_sdl(void) {
-  if (active == 0)
-    return;
-  // printf(">> SDL: deinit\n");
   pthread_cancel(p);
   SDL_DestroyWindow(window);
   window = NULL;

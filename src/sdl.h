@@ -2,17 +2,12 @@
 
 #include <SDL2/SDL.h>
 
-#define HOR 32
-#define VER 16
-#define PAD 2
-
 extern SDL_Surface *surface;
 extern uint32_t *pixels;
 
 int init_sdl(int x, int y);
 void deinit_sdl(void);
 
-int sdl_active(void);
 void sdl_check(void);
 
 void sdl_redraw(uint32_t *dst);

@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
   init_metro();
   init_lua();
   init_interface();
+  init_sdl(320, 240);
 
   if (argc > 1) {
     char cmd[64];
